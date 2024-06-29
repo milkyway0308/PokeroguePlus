@@ -2895,7 +2895,7 @@ export class MoveEffectPhase extends PokemonPhase {
       if (!activeTargets.length || (!move.hasAttr(VariableTargetAttr) && !move.isMultiTarget() && !targetHitChecks[this.targets[0]])) {
         this.stopMultiHit();
         if (activeTargets.length) {
-          this.scene.queueMessage(getPokemonMessage(user, "'s\nattack missed!"));
+          this.scene.queueMessage(i18next.t("fightUiHandler:attack_missed", { pokemonName: getPokemonNameWithAffix(user) }));
           moveHistoryEntry.result = MoveResult.MISS;
           applyMoveAttrs(MissEffectAttr, user, null, move);
         } else {
@@ -2913,7 +2913,7 @@ export class MoveEffectPhase extends PokemonPhase {
         for (const target of targets) {
           if (!targetHitChecks[target.getBattlerIndex()]) {
             this.stopMultiHit(target);
-            this.scene.queueMessage(getPokemonMessage(user, "'s\nattack missed!"));
+            this.scene.queueMessage(i18next.t("fightUiHandler:attack_missed", { pokemonName: getPokemonNameWithAffix(user) }));
             if (moveHistoryEntry.result === MoveResult.PENDING) {
               moveHistoryEntry.result = MoveResult.MISS;
             }

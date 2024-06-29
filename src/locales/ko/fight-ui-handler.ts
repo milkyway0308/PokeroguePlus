@@ -48,6 +48,7 @@ export const fightUiHandler: SimpleTranslationEntries = {
   "met_apparently": "레벨 {{level}}때 {{place}}에서 만났다.",
   "met_unknown": "{{place}}에서 만났다.",
   "memo_text": "{{nature_text}}\n{{met_text}}",
+  "attack_missed": "하지만 빗나갔다!",
   "do_what": "이 포켓몬으로 무엇을 하시겠습니까?",
   "select_move": "기술을 선택하세요.",
   "modifier_transfer": "전달할 아이템을 선택하세요. \n< 키와 > 키를 사용해 개수를 조정하세요.",
