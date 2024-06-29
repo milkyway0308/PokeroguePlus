@@ -23,6 +23,7 @@ import { Ability } from "../data/ability.js";
 import i18next from "i18next";
 import {modifierSortFunc} from "../modifier/modifier";
 import { PlayerGender } from "#enums/player-gender";
+import * as DataTextTransformer from "./data-text-transformer";
 
 
 enum Page {
@@ -907,9 +908,14 @@ export default class SummaryUiHandler extends UiHandler {
         const ppOverlay = this.scene.add.image(163, -1, "summary_moves_overlay_pp");
         ppOverlay.setOrigin(0, 1);
         this.extraMoveRowContainer.add(ppOverlay);
-
-        const pp = Utils.padInt(this.newMove.pp, 2, "  ");
-        const ppText = addTextObject(this.scene, 173, 1, `${pp}/${pp}`, TextStyle.WINDOW);
+        let ppTextString: string;
+        if (this.scene.ambiguousSkillInfo) {
+          ppTextString = DataTextTransformer.getPPFlavor(this.newMove.pp, this.newMove.pp);
+        } else {
+          const pp = Utils.padInt(this.newMove.pp, 2, "  ");
+          ppTextString = `${pp}/${pp}`;
+        }
+        const ppText = addTextObject(this.scene, 173, 1, ppTextString, TextStyle.WINDOW);
         ppText.setOrigin(0, 1);
         this.extraMoveRowContainer.add(ppText);
       }
@@ -941,7 +947,13 @@ export default class SummaryUiHandler extends UiHandler {
         if (move) {
           const maxPP = move.getMovePp();
           const pp = maxPP - move.ppUsed;
-          ppText.setText(`${Utils.padInt(pp, 2, "  ")}/${Utils.padInt(maxPP, 2, "  ")}`);
+          let ppTextString: string;
+          if (this.scene.ambiguousSkillInfo) {
+            ppTextString = DataTextTransformer.getPPFlavor(pp, maxPP);
+          } else {
+            ppTextString = `${Utils.padInt(pp, 2, "  ")}/${Utils.padInt(maxPP, 2, "  ")}`;
+          }
+          ppText.setText(ppTextString);
         }
 
         moveRowContainer.add(ppText);
