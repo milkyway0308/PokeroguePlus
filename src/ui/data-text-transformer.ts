@@ -19,7 +19,7 @@ export function getMultiplierFlavor(damageMultiplier: number | undefined) : stri
 }
 
 export function getAccuracyFlavor(accuracy: number | undefined) : string {
-  if (accuracy === undefined) {
+  if (accuracy === undefined || accuracy === 0) {
     return i18next.t("fightUiHandler:accuracyFlavorNone");
   } else if (accuracy <= 20) {
     return i18next.t("fightUiHandler:accuracyFlavorBlind");
@@ -51,7 +51,7 @@ export function getPPFlavor(current: number, max: number) : string {
 }
 
 export function getPowerFlavor(power: number | undefined) : string {
-  if (power === undefined) {
+  if (power === undefined || power === 0) {
     return i18next.t("fightUiHandler:powerFlavorNone");
   } else if (power <= 10) {
     return i18next.t("fightUiHandler:powerFlavorZero");
