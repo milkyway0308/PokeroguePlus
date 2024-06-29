@@ -185,12 +185,16 @@ export default class FightUiHandler extends UiHandler {
       const maxPP = pokemonMove.getMovePp();
       const pp = maxPP - pokemonMove.ppUsed;
 
-      this.ppText.setText(`${Utils.padInt(pp, 2, "  ")}/${Utils.padInt(maxPP, 2, "  ")}`);
-      this.powerText.setText(`${power >= 0 ? power : "---"}`);
-      this.accuracyText.setText(`${accuracy >= 0 ? accuracy : "---"}`);
-
       const ppPercentLeft = pp / maxPP;
-
+      if (this.scene.ambiguousSkillInfo) {
+        this.ppText.setText(this.getPPFlavor(pp, maxPP));
+        this.powerText.setText(this.getPowerFlavor(power));
+        this.accuracyText.setText(this.getAccuracyFlavor(accuracy));
+      } else {
+        this.ppText.setText(`${Utils.padInt(pp, 2, "  ")}/${Utils.padInt(maxPP, 2, "  ")}`);
+        this.powerText.setText(`${power >= 0 ? power : "---"}`);
+        this.accuracyText.setText(`${accuracy >= 0 ? accuracy : "---"}`);
+      }
       //** Determines TextStyle according to percentage of PP remaining */
       let ppColorStyle = TextStyle.MOVE_PP_FULL;
       if (ppPercentLeft > 0.25 && ppPercentLeft <= 0.5) {
@@ -233,26 +237,115 @@ export default class FightUiHandler extends UiHandler {
     if (effectiveness === undefined) {
       return undefined;
     }
-
     return `${effectiveness}x`;
   }
 
   displayMoves() {
     const pokemon = (this.scene.getCurrentPhase() as CommandPhase).getPokemon();
     const moveset = pokemon.getMoveset();
-
     for (let moveIndex = 0; moveIndex < 4; moveIndex++) {
-      const moveText = addTextObject(this.scene, moveIndex % 2 === 0 ? 0 : 100, moveIndex < 2 ? 0 : 16, "-", TextStyle.WINDOW);
+      const moveText = addTextObject(this.scene, moveIndex % 2 === 0 ? 0 : 100, moveIndex < 2 ? 0 : 20, "-", TextStyle.WINDOW);
+      const effectiveText = addTextObject(this.scene, moveIndex % 2 === 0 ? 0 : 100, moveIndex < 2 ? 12 : 32, "-", TextStyle.EFFECTIVE);
       moveText.setName("text-empty-move");
-
       if (moveIndex < moveset.length) {
         const pokemonMove = moveset[moveIndex];
         moveText.setText(pokemonMove.getName());
         moveText.setName(pokemonMove.getName());
         moveText.setColor(this.getMoveColor(pokemon, pokemonMove) ?? moveText.style.color);
+        if (this.scene.typeHints) {
+          const damageMultiplier = this.getEffective(pokemon, pokemonMove);
+          let damageText : string;
+          const flavor = this.getMultiplierFlavor(damageMultiplier);
+          if (!this.scene.ambiguousSkillInfo) {
+            damageText = i18next.t("fightUiHandler:damageMultiplierWithFlavor", { damage: damageMultiplier, flavor: flavor });
+          } else {
+            damageText = i18next.t("fightUiHandler:damageOnlyFlavor", { flavor: flavor });
+          }
+          effectiveText.setText(damageText);
+          effectiveText.setName("text-effective-value");
+          effectiveText.setColor(this.getMoveColor(pokemon, pokemonMove) ?? moveText.style.color);
+          this.movesContainer.add(effectiveText);
+        }
       }
 
       this.movesContainer.add(moveText);
+    }
+  }
+
+
+  private getEffective(pokemon: Pokemon, pokemonMove: PokemonMove): number {
+    const opponents = pokemon.getOpponents();
+    if (opponents.length <= 0) {
+      return 1;
+    }
+    const moveColors = opponents.map((opponent) => {
+      return opponent.getMoveEffectiveness(pokemon, pokemonMove);
+    }).sort((a, b) => b - a);
+    return moveColors[0] ?? 1;
+  }
+
+  private getMultiplierFlavor(damageMultiplier: number) : string {
+    if (damageMultiplier <= 0) {
+      return i18next.t("fightUiHandler:flavorNeutralized");
+    } else if (damageMultiplier <= 0.5) {
+      return i18next.t("fightUiHandler:flavorWeak");
+    } else if (damageMultiplier < 1) {
+      return i18next.t("fightUiHandler:flavorDisadvantage");
+    } else if (damageMultiplier === 1) {
+      return i18next.t("fightUiHandler:flavorOrdinary");
+    } else if (damageMultiplier <= 1.5) {
+      return i18next.t("fightUiHandler:flavorAdvantage");
+    } else if (damageMultiplier < 3.0) {
+      return i18next.t("fightUiHandler:flavorOverwhelming");
+    }
+    return i18next.t("fightUiHandler:flavorOneHitKo");
+  }
+
+  private getAccuracyFlavor(accuracy: number) : string {
+    if (accuracy <= 30) {
+      return i18next.t("fightUiHandler:accuracyFlavorBlind");
+    } else if (accuracy <= 50) {
+      return i18next.t("fightUiHandler:accuracyFlavorLow");
+    } else if (accuracy <= 75) {
+      return i18next.t("fightUiHandler:accuracyFlavorCommon");
+    } else if (accuracy <= 90) {
+      return i18next.t("fightUiHandler:accuracyFlavorHigh");
+    } else {
+      return i18next.t("fightUiHandler:accuracyFlavorPerfect");
+    }
+  }
+
+  private getPPFlavor(current: number, max: number) : string {
+    if (max === 1 && current === 1) {
+      return i18next.t("fightUiHandler:ppFlavorSingleUse");
+    }
+    const percentage = current / max;
+    if (percentage === 0) {
+      return i18next.t("fightUiHandler:ppFlavorEmpty");
+    } else if (percentage < 0.25) {
+      return i18next.t("fightUiHandler:ppFlavorLow");
+    } else if (percentage < 0.75) {
+      return i18next.t("fightUiHandler:ppFlavorMedium");
+    } else {
+      return i18next.t("fightUiHandler:ppFlavorHigh");
+    }
+  }
+
+  private getPowerFlavor(power: number) : string {
+    if (power <= 0) {
+      return i18next.t("fightUiHandler:powerFlavorZero");
+    } else if (power <= 20) {
+      return i18next.t("fightUiHandler:powerFlavorLow");
+    } else if (power <= 50) {
+      return i18next.t("fightUiHandler:powerFlavorCommon");
+    } else if (power <= 75) {
+      return i18next.t("fightUiHandler:powerFlavorAverage");
+    } else if (power <= 100) {
+      return i18next.t("fightUiHandler:powerFlavorOverAverage");
+    } else if (power <= 150) {
+      return i18next.t("fightUiHandler:powerFlavorGreat");
+    } else {
+      return i18next.t("fightUiHandler:powerFlavorMagnificent");
     }
   }
 

@@ -33,7 +33,8 @@ export enum TextStyle {
   MOVE_PP_FULL,
   MOVE_PP_HALF_FULL,
   MOVE_PP_NEAR_EMPTY,
-  MOVE_PP_EMPTY
+  MOVE_PP_EMPTY,
+  EFFECTIVE
 }
 
 export function addTextObject(scene: Phaser.Scene, x: number, y: number, content: string, style: TextStyle, extraStyleOptions?: Phaser.Types.GameObjects.Text.TextStyle): Phaser.GameObjects.Text {
@@ -137,6 +138,11 @@ function getTextStyleOptions(style: TextStyle, uiTheme: UiTheme, extraStyleOptio
     break;
   case TextStyle.MOVE_INFO_CONTENT:
     styleOptions.fontSize = defaultFontSize - 40;
+    shadowXpos = 3;
+    shadowYpos = 3;
+    break;
+  case TextStyle.EFFECTIVE:
+    styleOptions.fontSize = defaultFontSize - 65;
     shadowXpos = 3;
     shadowYpos = 3;
     break;
