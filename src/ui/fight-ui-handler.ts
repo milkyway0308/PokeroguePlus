@@ -277,7 +277,7 @@ export default class FightUiHandler extends UiHandler {
   }
 
 
-  private getEffective(pokemon: Pokemon, pokemonMove: PokemonMove): number {
+  private getEffective(pokemon: Pokemon, pokemonMove: PokemonMove): number | undefined {
     const opponents = pokemon.getOpponents();
     if (opponents.length <= 0) {
       return 1;
@@ -285,7 +285,7 @@ export default class FightUiHandler extends UiHandler {
     const moveColors = opponents.map((opponent) => {
       return opponent.getMoveEffectiveness(pokemon, pokemonMove);
     }).sort((a, b) => b - a);
-    return moveColors[0] ?? 1;
+    return moveColors[0];
   }
 
   /**

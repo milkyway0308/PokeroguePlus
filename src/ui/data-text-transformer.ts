@@ -1,6 +1,8 @@
 import i18next from "i18next";
-export function getMultiplierFlavor(damageMultiplier: number) : string {
-  if (damageMultiplier <= 0) {
+export function getMultiplierFlavor(damageMultiplier: number | undefined) : string {
+  if (damageMultiplier === undefined) {
+    return i18next.t("fightUiHandler:flavorNone");
+  } else if (damageMultiplier < 0.3) {
     return i18next.t("fightUiHandler:flavorNeutralized");
   } else if (damageMultiplier <= 0.5) {
     return i18next.t("fightUiHandler:flavorWeak");
@@ -16,8 +18,10 @@ export function getMultiplierFlavor(damageMultiplier: number) : string {
   return i18next.t("fightUiHandler:flavorOneHitKo");
 }
 
-export function getAccuracyFlavor(accuracy: number) : string {
-  if (accuracy <= 30) {
+export function getAccuracyFlavor(accuracy: number | undefined) : string {
+  if (accuracy === undefined) {
+    return i18next.t("fightUiHandler:accuracyFlavorNone");
+  } else if (accuracy <= 20) {
     return i18next.t("fightUiHandler:accuracyFlavorBlind");
   } else if (accuracy <= 50) {
     return i18next.t("fightUiHandler:accuracyFlavorLow");
@@ -46,8 +50,10 @@ export function getPPFlavor(current: number, max: number) : string {
   }
 }
 
-export function getPowerFlavor(power: number) : string {
-  if (power <= 0) {
+export function getPowerFlavor(power: number | undefined) : string {
+  if (power === undefined) {
+    return i18next.t("fightUiHandler:powerFlavorNone");
+  } else if (power <= 10) {
     return i18next.t("fightUiHandler:powerFlavorZero");
   } else if (power <= 20) {
     return i18next.t("fightUiHandler:powerFlavorLow");
