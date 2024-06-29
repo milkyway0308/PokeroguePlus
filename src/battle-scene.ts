@@ -66,6 +66,7 @@ import { PlayerGender } from "#enums/player-gender";
 import { Species } from "#enums/species";
 import { UiTheme } from "#enums/ui-theme";
 import { TimedEventManager } from "#app/timed-event-manager.js";
+import i18next from "i18next";
 
 export const bypassLogin = import.meta.env.VITE_BYPASS_LOGIN === "1";
 
@@ -464,7 +465,7 @@ export default class BattleScene extends SceneBase {
     this.luckText.setVisible(false);
     this.fieldUI.add(this.luckText);
 
-    this.luckLabelText = addTextObject(this, (this.game.canvas.width / 6) - 2, 0, "Luck:", TextStyle.PARTY, { fontSize: "54px" });
+    this.luckLabelText = addTextObject(this, (this.game.canvas.width / 6) - 2, 0, i18next.t("fightUiHandler:luck"), TextStyle.PARTY, { fontSize: "54px" });
     this.luckLabelText.setName("text-luck-label");
     this.luckLabelText.setOrigin(1, 0.5);
     this.luckLabelText.setVisible(false);
@@ -1501,7 +1502,7 @@ export default class BattleScene extends SceneBase {
     const labels = [ this.luckLabelText, this.luckText ];
     labels.forEach(t => t.setAlpha(0));
     const luckValue = getPartyLuckValue(this.getParty());
-    this.luckText.setText(getLuckString(luckValue));
+    this.luckText.setText(getLuckString(luckValue, this.ambiguousTextInfo));
     if (luckValue < 14) {
       this.luckText.setTint(getLuckTextTint(luckValue));
     } else {
