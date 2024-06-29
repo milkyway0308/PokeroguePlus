@@ -238,6 +238,9 @@ export default class FightUiHandler extends UiHandler {
     if (effectiveness === undefined) {
       return undefined;
     }
+    if (this.scene.ambiguousTextInfo) {
+      return DataTextTransformer.getMultiplierFlavor(effectiveness);
+    }
     return `${effectiveness}x`;
   }
 
