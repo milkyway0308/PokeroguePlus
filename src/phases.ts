@@ -65,7 +65,7 @@ import { Moves } from "#enums/moves";
 import { PlayerGender } from "#enums/player-gender";
 import { Species } from "#enums/species";
 import { TrainerType } from "#enums/trainer-type";
-import {getLevelTotalExp} from "#app/data/exp";
+import { getLevelRelExp } from "#app/data/exp";
 
 const { t } = i18next;
 
@@ -4456,17 +4456,16 @@ export class ExpPhase extends PlayerPartyMemberPokemonPhase {
     super.start();
 
     const pokemon = this.getPokemon();
-    const nextLvExp = pokemon.level < this.scene.getMaxExpLevel()
-      ? getLevelTotalExp(pokemon.level + 1, pokemon.species.growthRate) : 0;
+    const relNextXp = getLevelRelExp(pokemon.level + 1, pokemon.species.growthRate);
     const exp = new Utils.NumberHolder(this.expValue);
     this.scene.applyModifiers(ExpBoosterModifier, true, exp);
     exp.value = Math.floor(exp.value);
     let xpText : string;
     if (this.scene.ambiguousTextInfo) {
-      if (nextLvExp <= 0) {
+      if (relNextXp <= 0) {
         xpText = i18next.t("battle:expGainFlavorMax", {pokemonName: pokemon.name});
       } else {
-        const percentage = Math.floor((exp.value / nextLvExp) * 100);
+        const percentage = Math.floor((exp.value / relNextXp) * 100);
         if (percentage <= 20) {
           xpText = i18next.t("battle:expGainFlavorVerySmall", {pokemonName: pokemon.name, exp: exp.value});
         } else if (percentage <= 50) {
