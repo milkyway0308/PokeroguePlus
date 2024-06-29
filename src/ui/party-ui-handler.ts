@@ -20,6 +20,7 @@ import { applyChallenges, ChallengeType } from "#app/data/challenge.js";
 import MoveInfoOverlay from "./move-info-overlay";
 import i18next from "i18next";
 import { Moves } from "#enums/moves";
+import * as DataTextTransformer from "./data-text-transformer";
 
 const defaultMessage = i18next.t("menu:choosePokemon");
 
@@ -839,7 +840,11 @@ export default class PartyUiHandler extends MessageUiHandler {
           if (this.showMovePp) {
             const maxPP = move.getMovePp();
             const currPP = maxPP - move.ppUsed;
-            optionName = `${move.getName()} ${currPP}/${maxPP}`;
+            if (this.scene.ambiguousSkillInfo) {
+              optionName = `${move.getName()} - ${DataTextTransformer.getPPFlavor(currPP, maxPP)}`;
+            } else {
+              optionName = `${move.getName()} ${currPP}/${maxPP}`;
+            }
           } else {
             optionName = move.getName();
           }

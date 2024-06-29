@@ -10,6 +10,7 @@ import { MoveCategory } from "#app/data/move.js";
 import i18next from "i18next";
 import {Button} from "#enums/buttons";
 import Pokemon, { PokemonMove } from "#app/field/pokemon.js";
+import * as DataTextTransformer from "./data-text-transformer";
 
 export default class FightUiHandler extends UiHandler {
   private movesContainer: Phaser.GameObjects.Container;
@@ -187,9 +188,9 @@ export default class FightUiHandler extends UiHandler {
 
       const ppPercentLeft = pp / maxPP;
       if (this.scene.ambiguousSkillInfo) {
-        this.ppText.setText(this.getPPFlavor(pp, maxPP));
-        this.powerText.setText(this.getPowerFlavor(power));
-        this.accuracyText.setText(this.getAccuracyFlavor(accuracy));
+        this.ppText.setText(DataTextTransformer.getPPFlavor(pp, maxPP));
+        this.powerText.setText(DataTextTransformer.getPowerFlavor(power));
+        this.accuracyText.setText(DataTextTransformer.getAccuracyFlavor(accuracy));
       } else {
         this.ppText.setText(`${Utils.padInt(pp, 2, "  ")}/${Utils.padInt(maxPP, 2, "  ")}`);
         this.powerText.setText(`${power >= 0 ? power : "---"}`);
@@ -255,7 +256,7 @@ export default class FightUiHandler extends UiHandler {
         if (this.scene.typeHints) {
           const damageMultiplier = this.getEffective(pokemon, pokemonMove);
           let damageText : string;
-          const flavor = this.getMultiplierFlavor(damageMultiplier);
+          const flavor = DataTextTransformer.getMultiplierFlavor(damageMultiplier);
           if (!this.scene.ambiguousSkillInfo) {
             damageText = i18next.t("fightUiHandler:damageMultiplierWithFlavor", { damage: damageMultiplier, flavor: flavor });
           } else {
@@ -282,71 +283,6 @@ export default class FightUiHandler extends UiHandler {
       return opponent.getMoveEffectiveness(pokemon, pokemonMove);
     }).sort((a, b) => b - a);
     return moveColors[0] ?? 1;
-  }
-
-  private getMultiplierFlavor(damageMultiplier: number) : string {
-    if (damageMultiplier <= 0) {
-      return i18next.t("fightUiHandler:flavorNeutralized");
-    } else if (damageMultiplier <= 0.5) {
-      return i18next.t("fightUiHandler:flavorWeak");
-    } else if (damageMultiplier < 1) {
-      return i18next.t("fightUiHandler:flavorDisadvantage");
-    } else if (damageMultiplier === 1) {
-      return i18next.t("fightUiHandler:flavorOrdinary");
-    } else if (damageMultiplier <= 1.5) {
-      return i18next.t("fightUiHandler:flavorAdvantage");
-    } else if (damageMultiplier < 3.0) {
-      return i18next.t("fightUiHandler:flavorOverwhelming");
-    }
-    return i18next.t("fightUiHandler:flavorOneHitKo");
-  }
-
-  private getAccuracyFlavor(accuracy: number) : string {
-    if (accuracy <= 30) {
-      return i18next.t("fightUiHandler:accuracyFlavorBlind");
-    } else if (accuracy <= 50) {
-      return i18next.t("fightUiHandler:accuracyFlavorLow");
-    } else if (accuracy <= 75) {
-      return i18next.t("fightUiHandler:accuracyFlavorCommon");
-    } else if (accuracy <= 90) {
-      return i18next.t("fightUiHandler:accuracyFlavorHigh");
-    } else {
-      return i18next.t("fightUiHandler:accuracyFlavorPerfect");
-    }
-  }
-
-  private getPPFlavor(current: number, max: number) : string {
-    if (max === 1 && current === 1) {
-      return i18next.t("fightUiHandler:ppFlavorSingleUse");
-    }
-    const percentage = current / max;
-    if (percentage === 0) {
-      return i18next.t("fightUiHandler:ppFlavorEmpty");
-    } else if (percentage < 0.25) {
-      return i18next.t("fightUiHandler:ppFlavorLow");
-    } else if (percentage < 0.75) {
-      return i18next.t("fightUiHandler:ppFlavorMedium");
-    } else {
-      return i18next.t("fightUiHandler:ppFlavorHigh");
-    }
-  }
-
-  private getPowerFlavor(power: number) : string {
-    if (power <= 0) {
-      return i18next.t("fightUiHandler:powerFlavorZero");
-    } else if (power <= 20) {
-      return i18next.t("fightUiHandler:powerFlavorLow");
-    } else if (power <= 50) {
-      return i18next.t("fightUiHandler:powerFlavorCommon");
-    } else if (power <= 75) {
-      return i18next.t("fightUiHandler:powerFlavorAverage");
-    } else if (power <= 100) {
-      return i18next.t("fightUiHandler:powerFlavorOverAverage");
-    } else if (power <= 150) {
-      return i18next.t("fightUiHandler:powerFlavorGreat");
-    } else {
-      return i18next.t("fightUiHandler:powerFlavorMagnificent");
-    }
   }
 
   /**
