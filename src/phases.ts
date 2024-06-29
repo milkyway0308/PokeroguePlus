@@ -4581,7 +4581,7 @@ export class LevelUpPhase extends PlayerPartyMemberPokemonPhase {
     pokemon.updateInfo();
     if (this.scene.expParty === ExpNotification.DEFAULT) {
       this.scene.playSound("level_up_fanfare");
-      this.scene.ui.showText(i18next.t("battle:levelUp", { pokemonName: this.getPokemon().name, level: this.level }), null, () => this.scene.ui.getMessageHandler().promptLevelUpStats(this.partyMemberIndex, prevStats, false).then(() => this.end()), null, true);
+      this.scene.ui.showText(i18next.t((this.scene.ambiguousTextInfo ? "battle:levelUpAmbiguous" : "battle:levelUp"), { pokemonName: this.getPokemon().name, level: this.level }), null, () => this.scene.ui.getMessageHandler().promptLevelUpStats(this.partyMemberIndex, prevStats, false).then(() => this.end()), null, true);
     } else if (this.scene.expParty === ExpNotification.SKIP) {
       this.end();
     } else {

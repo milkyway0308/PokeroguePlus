@@ -35,6 +35,7 @@ export const battle: SimpleTranslationEntries = {
   "expGainFlavorVeryLarge": "{{pokemonName}}[[는]]\n매우 많은 경험치를 얻었다!",
   "expGainFlavorMax": "{{pokemonName}}[[는]]\n이미 충분한 경험을 쌓았다!",
   "levelUp": "{{pokemonName}}[[는]]\n레벨 {{level}}[[로]] 올랐다!",
+  "levelUpAmbiguous": "{{pokemonName}}[[는]]\n레벨이 올랐다!",
   "learnMove": "{{pokemonName}}[[는]] 새로\n{{moveName}}[[를]] 배웠다!",
   "learnMovePrompt": "{{pokemonName}}[[는]] 새로\n{{moveName}}[[를]] 배우고 싶다!…",
   "learnMoveLimitReached": "그러나 {{pokemonName}}[[는]] 기술을 4개\n알고 있으므로 더 이상 배울 수 없다!",
