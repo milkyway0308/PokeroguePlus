@@ -944,6 +944,7 @@ export default class SummaryUiHandler extends UiHandler {
           const pp = maxPP - move.ppUsed;
           let ppTextString: string;
           if (this.scene.ambiguousSkillInfo) {
+            ppText.setX(143);
             ppTextString = DataTextTransformer.getPPFlavor(pp, maxPP);
           } else {
             const ppOverlay = this.scene.add.image(163, -1, "summary_moves_overlay_pp");
