@@ -31,7 +31,7 @@ export const fightUiHandler: SimpleTranslationEntries = {
   "flavorOrdinary": "평범함",
   "flavorAdvantage": "유리함",
   "flavorOverwhelming": "압도적!",
-  "flavorOneHitKO": "일격 필살!",
+  "flavorOneHitKo": "일격 필살!",
   "passive": "패시브 ", // The space at the end is important
   // Extra string here to avoid adding a new locale file
   "cancel": "취소",
