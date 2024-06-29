@@ -33,4 +33,10 @@ export const fightUiHandler: SimpleTranslationEntries = {
   "flavorOverwhelming": "압도적!",
   "flavorOneHitKO": "일격 필살!",
   "passive": "패시브 ", // The space at the end is important
+  // Extra string here to avoid adding a new locale file
+  "cancel": "취소",
+  "back": "돌아가기",
+  "until_next_lv": "다음 레벨까지: ",
+  "exp": "경험치",
+  "luck_prefix": "행운: "
 } as const;

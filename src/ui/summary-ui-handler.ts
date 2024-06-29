@@ -718,7 +718,7 @@ export default class SummaryUiHandler extends UiHandler {
       }
 
       if (this.pokemon.getLuck()) {
-        const luckLabelText = addTextObject(this.scene, 141, 28, "Luck:", TextStyle.SUMMARY_ALT);
+        const luckLabelText = addTextObject(this.scene, 141, 28, i18next.t("fightUiHandler:luck_prefix"), TextStyle.SUMMARY_ALT);
         luckLabelText.setOrigin(0, 0);
         profileContainer.add(luckLabelText);
 
@@ -849,11 +849,11 @@ export default class SummaryUiHandler extends UiHandler {
       const relLvExp = getLevelRelExp(this.pokemon.level + 1, this.pokemon.species.growthRate);
       const expRatio = this.pokemon.level < this.scene.getMaxExpLevel() ? this.pokemon.levelExp / relLvExp : 0;
 
-      const expLabel = addTextObject(this.scene, 6, 112, "EXP. Points", TextStyle.SUMMARY);
+      const expLabel = addTextObject(this.scene, 6, 112, i18next.t("fightUiHandler:exp"), TextStyle.SUMMARY);
       expLabel.setOrigin(0, 0);
       statsContainer.add(expLabel);
 
-      const nextLvExpLabel = addTextObject(this.scene, 6, 128, "Next Lv.", TextStyle.SUMMARY);
+      const nextLvExpLabel = addTextObject(this.scene, 6, 128, i18next.t("fightUiHandler:until_next_lv"), TextStyle.SUMMARY);
       nextLvExpLabel.setOrigin(0, 0);
       statsContainer.add(nextLvExpLabel);
 
@@ -894,7 +894,7 @@ export default class SummaryUiHandler extends UiHandler {
       extraRowOverlay.setOrigin(0, 1);
       this.extraMoveRowContainer.add(extraRowOverlay);
 
-      const extraRowText = addTextObject(this.scene, 35, 0, this.summaryUiMode === SummaryUiMode.LEARN_MOVE ? this.newMove.name : "Cancel",
+      const extraRowText = addTextObject(this.scene, 35, 0, this.summaryUiMode === SummaryUiMode.LEARN_MOVE ? this.newMove.name : i18next.t("fightUiHandler:back"),
         this.summaryUiMode === SummaryUiMode.LEARN_MOVE ? TextStyle.SUMMARY_PINK : TextStyle.SUMMARY);
       extraRowText.setOrigin(0, 1);
       this.extraMoveRowContainer.add(extraRowText);
@@ -914,7 +914,7 @@ export default class SummaryUiHandler extends UiHandler {
           const pp = Utils.padInt(this.newMove.pp, 2, "  ");
           ppTextString = `${pp}/${pp}`;
         }
-        const ppText = addTextObject(this.scene, 173, 1, ppTextString, TextStyle.WINDOW);
+        const ppText = addTextObject(this.scene, this.scene.ambiguousSkillInfo ? 143 : 173, 1, ppTextString, TextStyle.WINDOW);
         ppText.setOrigin(0, 1);
         this.extraMoveRowContainer.add(ppText);
       }
