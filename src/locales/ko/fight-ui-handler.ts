@@ -38,7 +38,7 @@ export const fightUiHandler: SimpleTranslationEntries = {
   "passive": "패시브 ", // The space at the end is important
   // Extra string here to avoid adding a new locale file
   "cancel": "취소",
-  "luck": "행운 수치",
+  "luck": "행운 수치: ",
   "back": "돌아가기",
   "until_next_lv": "레벨업까지:",
   "exp": "경험치",
