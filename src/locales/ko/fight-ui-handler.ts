@@ -36,7 +36,12 @@ export const fightUiHandler: SimpleTranslationEntries = {
   // Extra string here to avoid adding a new locale file
   "cancel": "취소",
   "back": "돌아가기",
-  "until_next_lv": "다음 레벨까지: ",
+  "until_next_lv": "레벨업까지:",
   "exp": "경험치",
-  "luck_prefix": "행운: "
+  "luck_prefix": "행운: ",
+  "nature": "{{nature}}한 성격.",
+  "met": "레벨 {{level}}때 {{place}}에서 만났다.",
+  "met_apparently": "레벨 {{level}}때 {{place}}에서 만났다.",
+  "met_unknown": "{{place}}에서 만났다.",
+  "memo_text": "{{nature_text}} {{met_text}}",
 } as const;
