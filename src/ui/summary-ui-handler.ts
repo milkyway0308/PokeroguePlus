@@ -936,10 +936,6 @@ export default class SummaryUiHandler extends UiHandler {
         moveText.setOrigin(0, 1);
         moveRowContainer.add(moveText);
 
-        const ppOverlay = this.scene.add.image(163, -1, "summary_moves_overlay_pp");
-        ppOverlay.setOrigin(0, 1);
-        moveRowContainer.add(ppOverlay);
-
         const ppText = addTextObject(this.scene, 173, 1, "--/--", TextStyle.WINDOW);
         ppText.setOrigin(0, 1);
 
@@ -950,6 +946,9 @@ export default class SummaryUiHandler extends UiHandler {
           if (this.scene.ambiguousSkillInfo) {
             ppTextString = DataTextTransformer.getPPFlavor(pp, maxPP);
           } else {
+            const ppOverlay = this.scene.add.image(163, -1, "summary_moves_overlay_pp");
+            ppOverlay.setOrigin(0, 1);
+            moveRowContainer.add(ppOverlay);
             ppTextString = `${Utils.padInt(pp, 2, "  ")}/${Utils.padInt(maxPP, 2, "  ")}`;
           }
           ppText.setText(ppTextString);
