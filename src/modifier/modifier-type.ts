@@ -2035,7 +2035,7 @@ export function getPartyLuckValue(party: Pokemon[]): integer {
 
 export function getLuckString(luckValue: integer, isAmbiguous: boolean): string {
   if (isAmbiguous) {
-    return [ "잊혀짐", "시체", "간신히 살아있음", "저주받음", "응급실 단골", "중증 환자", "경증 환자", "일반인", "적당함", "꽤 좋음", "아주 좋음", "환상적임", "축복받음",  "축복 그 자체", "신" ][luckValue];
+    return [ "잊혀짐", "시체", "빈사", "저주받음", "응급 환자", "중증 환자", "경증 환자", "일반인", "적당함", "꽤 좋음", "아주 좋음", "환상적임", "축복받음",  "축복 일체화", "신" ][luckValue];
   }
   return [ "D", "C", "C+", "B-", "B", "B+", "A-", "A", "A+", "A++", "S", "S+", "SS", "SS+", "SSS" ][luckValue];
 }
