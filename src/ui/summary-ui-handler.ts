@@ -906,7 +906,7 @@ export default class SummaryUiHandler extends UiHandler {
         newMoveTypeIcon.setOrigin(0, 1);
         this.extraMoveRowContainer.add(newMoveTypeIcon);
         let ppTextString: string;
-        if (this.scene.ambiguousSkillInfo) {
+        if (this.scene.ambiguousTextInfo) {
           ppTextString = DataTextTransformer.getPPFlavor(this.newMove.pp, this.newMove.pp);
         } else {
           const ppOverlay = this.scene.add.image(163, -1, "summary_moves_overlay_pp");
@@ -915,7 +915,7 @@ export default class SummaryUiHandler extends UiHandler {
           const pp = Utils.padInt(this.newMove.pp, 2, "  ");
           ppTextString = `${pp}/${pp}`;
         }
-        const ppText = addTextObject(this.scene, this.scene.ambiguousSkillInfo ? 143 : 173, 1, ppTextString, TextStyle.WINDOW);
+        const ppText = addTextObject(this.scene, this.scene.ambiguousTextInfo ? 143 : 173, 1, ppTextString, TextStyle.WINDOW);
         ppText.setOrigin(0, 1);
         this.extraMoveRowContainer.add(ppText);
       }
@@ -944,7 +944,7 @@ export default class SummaryUiHandler extends UiHandler {
           const maxPP = move.getMovePp();
           const pp = maxPP - move.ppUsed;
           let ppTextString: string;
-          if (this.scene.ambiguousSkillInfo) {
+          if (this.scene.ambiguousTextInfo) {
             ppText.setX(143);
             ppTextString = DataTextTransformer.getPPFlavor(pp, maxPP);
           } else {

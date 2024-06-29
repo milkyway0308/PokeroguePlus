@@ -112,7 +112,7 @@ export default class BattleScene extends SceneBase {
   public reroll: boolean = false;
   public showMovesetFlyout: boolean = true;
   public showArenaFlyout: boolean = true;
-  public ambiguousSkillInfo: boolean = false;
+  public ambiguousTextInfo: boolean = false;
   public showTimeOfDayWidget: boolean = true;
   public timeOfDayAnimation: EaseType = EaseType.NONE;
   public showLevelUpStats: boolean = true;

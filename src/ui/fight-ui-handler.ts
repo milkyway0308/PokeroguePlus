@@ -187,7 +187,7 @@ export default class FightUiHandler extends UiHandler {
       const pp = maxPP - pokemonMove.ppUsed;
 
       const ppPercentLeft = pp / maxPP;
-      if (this.scene.ambiguousSkillInfo) {
+      if (this.scene.ambiguousTextInfo) {
         this.ppText.setText(DataTextTransformer.getPPFlavor(pp, maxPP));
         this.powerText.setText(DataTextTransformer.getPowerFlavor(power));
         this.accuracyText.setText(DataTextTransformer.getAccuracyFlavor(accuracy));
@@ -257,7 +257,7 @@ export default class FightUiHandler extends UiHandler {
           const damageMultiplier = this.getEffective(pokemon, pokemonMove);
           let damageText : string;
           const flavor = DataTextTransformer.getMultiplierFlavor(damageMultiplier);
-          if (!this.scene.ambiguousSkillInfo) {
+          if (!this.scene.ambiguousTextInfo) {
             damageText = i18next.t("fightUiHandler:damageMultiplierWithFlavor", { damage: damageMultiplier, flavor: flavor });
           } else {
             damageText = i18next.t("fightUiHandler:damageOnlyFlavor", { flavor: flavor });

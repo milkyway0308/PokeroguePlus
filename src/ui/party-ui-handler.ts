@@ -840,7 +840,7 @@ export default class PartyUiHandler extends MessageUiHandler {
           if (this.showMovePp) {
             const maxPP = move.getMovePp();
             const currPP = maxPP - move.ppUsed;
-            if (this.scene.ambiguousSkillInfo) {
+            if (this.scene.ambiguousTextInfo) {
               optionName = `${move.getName()} - ${DataTextTransformer.getPPFlavor(currPP, maxPP)}`;
             } else {
               optionName = `${move.getName()} ${currPP}/${maxPP}`;

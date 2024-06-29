@@ -65,6 +65,7 @@ import { Moves } from "#enums/moves";
 import { PlayerGender } from "#enums/player-gender";
 import { Species } from "#enums/species";
 import { TrainerType } from "#enums/trainer-type";
+import {getLevelTotalExp} from "#app/data/exp";
 
 const { t } = i18next;
 
@@ -4455,10 +4456,33 @@ export class ExpPhase extends PlayerPartyMemberPokemonPhase {
     super.start();
 
     const pokemon = this.getPokemon();
+    const nextLvExp = pokemon.level < this.scene.getMaxExpLevel()
+      ? getLevelTotalExp(pokemon.level + 1, pokemon.species.growthRate) : 0;
     const exp = new Utils.NumberHolder(this.expValue);
     this.scene.applyModifiers(ExpBoosterModifier, true, exp);
     exp.value = Math.floor(exp.value);
-    this.scene.ui.showText(i18next.t("battle:expGain", { pokemonName: pokemon.name, exp: exp.value }), null, () => {
+    let xpText : string;
+    if (this.scene.ambiguousTextInfo) {
+      if (nextLvExp <= 0) {
+        xpText = i18next.t("battle:expGainFlavorMax", {pokemonName: pokemon.name});
+      } else {
+        const percentage = Math.floor((exp.value / nextLvExp) * 100);
+        if (percentage <= 20) {
+          xpText = i18next.t("battle:expGainFlavorVerySmall", {pokemonName: pokemon.name, exp: exp.value});
+        } else if (percentage <= 50) {
+          xpText = i18next.t("battle:expGainFlavorSmall", {pokemonName: pokemon.name, exp: exp.value});
+        } else if (percentage <= 75) {
+          xpText = i18next.t("battle:expGainFlavorNormal", {pokemonName: pokemon.name, exp: exp.value});
+        } else if (percentage <= 150) {
+          xpText = i18next.t("battle:expGainFlavorLarge", {pokemonName: pokemon.name, exp: exp.value});
+        } else {
+          xpText = i18next.t("battle:expGainFlavorVeryLarge", {pokemonName: pokemon.name, exp: exp.value});
+        }
+      }
+    } else {
+      xpText = i18next.t("battle:expGain", { pokemonName: pokemon.name, exp: exp.value });
+    }
+    this.scene.ui.showText(xpText, null, () => {
       const lastLevel = pokemon.level;
       pokemon.addExp(exp.value);
       const newLevel = pokemon.level;

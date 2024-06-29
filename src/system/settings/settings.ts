@@ -622,7 +622,7 @@ export function setSetting(scene: BattleScene, setting: string, value: integer):
     scene.showBgmBar = Setting[index].options[value].value === "On";
     break;
   case SettingKeys.Ambiguous_Skill_Info:
-    scene.ambiguousSkillInfo = Setting[index].options[value].value === "On";
+    scene.ambiguousTextInfo = Setting[index].options[value].value === "On";
     break;
   case SettingKeys.Candy_Upgrade_Notification:
     if (scene.candyUpgradeNotification === value) {
