@@ -798,7 +798,7 @@ export default class SummaryUiHandler extends UiHandler {
 
       const natureString = i18next.t("fightUiHandler:nature", {nature: `${getBBCodeFrag(Utils.toReadableString(getNatureName(this.pokemon.getNature())), TextStyle.SUMMARY_RED)}${getBBCodeFrag("", TextStyle.WINDOW_ALT)}`});
       const metString = this.pokemon.metBiome === -1 ? i18next.t("fightUiHandler:met_unknown", { biome: `${getBBCodeFrag(getBiomeName(this.pokemon.metBiome), TextStyle.SUMMARY_RED)}${getBBCodeFrag("", TextStyle.WINDOW_ALT)}`})
-        : i18next.t("fightUiHandler:met", {level: `${getBBCodeFrag(this.pokemon.metLevel.toString(), TextStyle.SUMMARY_RED)}${getBBCodeFrag("", TextStyle.WINDOW_ALT)}`, place: getBBCodeFrag(getBiomeName(this.pokemon.metBiome), TextStyle.SUMMARY_RED)});
+        : i18next.t("fightUiHandler:met", {level: `${getBBCodeFrag(this.pokemon.metLevel.toString(), TextStyle.SUMMARY_RED)}${getBBCodeFrag("", TextStyle.WINDOW_ALT)}`, place: `${getBBCodeFrag(getBiomeName(this.pokemon.metBiome), TextStyle.SUMMARY_RED)}${getBBCodeFrag("", TextStyle.WINDOW_ALT)}`});
       const memoString = getBBCodeFrag(i18next.t("fightUiHandler:memo_text", {nature_text: natureString, met_text: metString}), TextStyle.WINDOW_ALT);
       const memoText = addBBCodeTextObject(this.scene, 7, 113, memoString, TextStyle.WINDOW_ALT);
       memoText.setOrigin(0, 0);
