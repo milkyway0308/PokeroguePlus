@@ -904,14 +904,13 @@ export default class SummaryUiHandler extends UiHandler {
         const newMoveTypeIcon = this.scene.add.sprite(0, 0, `types${Utils.verifyLang(i18next.resolvedLanguage) ? `_${i18next.resolvedLanguage}` : ""}`, Type[this.newMove.type].toLowerCase());
         newMoveTypeIcon.setOrigin(0, 1);
         this.extraMoveRowContainer.add(newMoveTypeIcon);
-
-        const ppOverlay = this.scene.add.image(163, -1, "summary_moves_overlay_pp");
-        ppOverlay.setOrigin(0, 1);
-        this.extraMoveRowContainer.add(ppOverlay);
         let ppTextString: string;
         if (this.scene.ambiguousSkillInfo) {
           ppTextString = DataTextTransformer.getPPFlavor(this.newMove.pp, this.newMove.pp);
         } else {
+          const ppOverlay = this.scene.add.image(163, -1, "summary_moves_overlay_pp");
+          ppOverlay.setOrigin(0, 1);
+          this.extraMoveRowContainer.add(ppOverlay);
           const pp = Utils.padInt(this.newMove.pp, 2, "  ");
           ppTextString = `${pp}/${pp}`;
         }
