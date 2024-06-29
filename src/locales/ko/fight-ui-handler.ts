@@ -43,5 +43,5 @@ export const fightUiHandler: SimpleTranslationEntries = {
   "met": "레벨 {{level}}때 {{place}}에서 만났다.",
   "met_apparently": "레벨 {{level}}때 {{place}}에서 만났다.",
   "met_unknown": "{{place}}에서 만났다.",
-  "memo_text": "{{nature_text}} {{met_text}}",
+  "memo_text": "{{nature_text}}\n{{met_text}}",
 } as const;
