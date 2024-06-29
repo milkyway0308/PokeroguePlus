@@ -146,3 +146,9 @@ export const NEVER_CRIT_OVERRIDE: boolean = false;
  * If more items are listed than rolled, only the first X items will be shown, where X is the number of items rolled.
  */
 export const ITEM_REWARD_OVERRIDE: Array<String> = [];
+
+/**
+ * Forces the game to be offline, even if the user is online.
+ * If it is set to true, always skip login modal and go straight to offline mode.
+ */
+export const FORCE_OFFLINE_OVERRIDE: boolean = false;
