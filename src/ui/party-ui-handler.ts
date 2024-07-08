@@ -20,6 +20,7 @@ import { applyChallenges, ChallengeType } from "#app/data/challenge.js";
 import MoveInfoOverlay from "./move-info-overlay";
 import i18next from "i18next";
 import { Moves } from "#enums/moves";
+import * as DataTextTransformer from "./data-text-transformer";
 
 const defaultMessage = i18next.t("menu:choosePokemon");
 
@@ -651,20 +652,20 @@ export default class PartyUiHandler extends MessageUiHandler {
 
     this.optionsMode = true;
 
-    let optionsMessage = "Do what with this Pokémon?";
+    let optionsMessage = i18next.t("fightUiHandler:do_what");
 
     switch (this.partyUiMode) {
     case PartyUiMode.MOVE_MODIFIER:
-      optionsMessage = "Select a move.";
+      optionsMessage = i18next.t("fightUiHandler:select_move");
       break;
     case PartyUiMode.MODIFIER_TRANSFER:
       if (!this.transferMode) {
-        optionsMessage = "Select a held item to transfer.\nUse < and > to change the quantity.";
+        optionsMessage = i18next.t("fightUiHandler:modifier_transfer");
       }
       break;
     case PartyUiMode.SPLICE:
       if (!this.transferMode) {
-        optionsMessage = "Select another Pokémon to splice.";
+        optionsMessage = i18next.t("fightUiHandler:splice");
       }
       break;
     }
@@ -839,7 +840,11 @@ export default class PartyUiHandler extends MessageUiHandler {
           if (this.showMovePp) {
             const maxPP = move.getMovePp();
             const currPP = maxPP - move.ppUsed;
-            optionName = `${move.getName()} ${currPP}/${maxPP}`;
+            if (this.scene.ambiguousTextInfo) {
+              optionName = `${move.getName()} - ${DataTextTransformer.getPPFlavor(currPP, maxPP)}`;
+            } else {
+              optionName = `${move.getName()} ${currPP}/${maxPP}`;
+            }
           } else {
             optionName = move.getName();
           }
@@ -932,25 +937,25 @@ export default class PartyUiHandler extends MessageUiHandler {
   getReleaseMessage(pokemonName: string): string {
     const rand = Utils.randInt(128);
     if (rand < 20) {
-      return `Goodbye, ${pokemonName}!`;
+      return i18next.t("fightUiHandler:goodbye_1", {pokemonName: pokemonName});
     } else if (rand < 40) {
-      return `Byebye, ${pokemonName}!`;
+      return i18next.t("fightUiHandler:goodbye_2", {pokemonName: pokemonName});
     } else if (rand < 60) {
-      return `Farewell, ${pokemonName}!`;
+      return i18next.t("fightUiHandler:goodbye_3", {pokemonName: pokemonName});
     } else if (rand < 80) {
-      return `So long, ${pokemonName}!`;
+      return i18next.t("fightUiHandler:goodbye_4", {pokemonName: pokemonName});
     } else if (rand < 100) {
-      return `This is where we part, ${pokemonName}!`;
+      return i18next.t("fightUiHandler:goodbye_5", {pokemonName: pokemonName});
     } else if (rand < 108) {
-      return `I'll miss you, ${pokemonName}!`;
+      return i18next.t("fightUiHandler:goodbye_6", {pokemonName: pokemonName});
     } else if (rand < 116) {
-      return `I'll never forget you, ${pokemonName}!`;
+      return i18next.t("fightUiHandler:goodbye_7", {pokemonName: pokemonName});
     } else if (rand < 124) {
-      return `Until we meet again, ${pokemonName}!`;
+      return i18next.t("fightUiHandler:goodbye_8", {pokemonName: pokemonName});
     } else if (rand < 127) {
-      return `Sayonara, ${pokemonName}!`;
+      return i18next.t("fightUiHandler:goodbye_9", {pokemonName: pokemonName});
     } else {
-      return `Smell ya later, ${pokemonName}!`;
+      return i18next.t("fightUiHandler:goodbye_10", {pokemonName: pokemonName});
     }
   }
 

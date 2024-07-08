@@ -1,5 +1,6 @@
 import i18next from "i18next";
 import { MoneyFormat } from "#enums/money-format";
+import * as Overrides from "./overrides";
 
 export const MissingTextureKey = "__MISSING";
 
@@ -281,7 +282,7 @@ export function executeIf<T>(condition: boolean, promiseFunc: () => Promise<T>):
 export const sessionIdKey = "pokerogue_sessionId";
 // Check if the current hostname is 'localhost' or an IP address, and ensure a port is specified
 export const isLocal = (
-  (window.location.hostname === "localhost" ||
+  (Overrides.FORCE_OFFLINE_OVERRIDE || window.location.hostname === "localhost" ||
    /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/.test(window.location.hostname)) &&
   window.location.port !== "") || window.location.hostname === "";
 

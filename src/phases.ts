@@ -65,6 +65,7 @@ import { Moves } from "#enums/moves";
 import { PlayerGender } from "#enums/player-gender";
 import { Species } from "#enums/species";
 import { TrainerType } from "#enums/trainer-type";
+import { getLevelRelExp } from "#app/data/exp";
 
 const { t } = i18next;
 
@@ -2894,7 +2895,7 @@ export class MoveEffectPhase extends PokemonPhase {
       if (!activeTargets.length || (!move.hasAttr(VariableTargetAttr) && !move.isMultiTarget() && !targetHitChecks[this.targets[0]])) {
         this.stopMultiHit();
         if (activeTargets.length) {
-          this.scene.queueMessage(getPokemonMessage(user, "'s\nattack missed!"));
+          this.scene.queueMessage(i18next.t("fightUiHandler:attack_missed", { pokemonName: getPokemonNameWithAffix(user) }));
           moveHistoryEntry.result = MoveResult.MISS;
           applyMoveAttrs(MissEffectAttr, user, null, move);
         } else {
@@ -2912,7 +2913,7 @@ export class MoveEffectPhase extends PokemonPhase {
         for (const target of targets) {
           if (!targetHitChecks[target.getBattlerIndex()]) {
             this.stopMultiHit(target);
-            this.scene.queueMessage(getPokemonMessage(user, "'s\nattack missed!"));
+            this.scene.queueMessage(i18next.t("fightUiHandler:attack_missed", { pokemonName: getPokemonNameWithAffix(user) }));
             if (moveHistoryEntry.result === MoveResult.PENDING) {
               moveHistoryEntry.result = MoveResult.MISS;
             }
@@ -4455,10 +4456,32 @@ export class ExpPhase extends PlayerPartyMemberPokemonPhase {
     super.start();
 
     const pokemon = this.getPokemon();
+    const relNextXp = getLevelRelExp(pokemon.level + 1, pokemon.species.growthRate);
     const exp = new Utils.NumberHolder(this.expValue);
     this.scene.applyModifiers(ExpBoosterModifier, true, exp);
     exp.value = Math.floor(exp.value);
-    this.scene.ui.showText(i18next.t("battle:expGain", { pokemonName: pokemon.name, exp: exp.value }), null, () => {
+    let xpText : string;
+    if (this.scene.ambiguousTextInfo) {
+      if (relNextXp <= 0) {
+        xpText = i18next.t("battle:expGainFlavorMax", {pokemonName: pokemon.name});
+      } else {
+        const percentage = Math.floor((exp.value / relNextXp) * 100);
+        if (percentage <= 20) {
+          xpText = i18next.t("battle:expGainFlavorVerySmall", {pokemonName: pokemon.name, exp: exp.value});
+        } else if (percentage <= 50) {
+          xpText = i18next.t("battle:expGainFlavorSmall", {pokemonName: pokemon.name, exp: exp.value});
+        } else if (percentage <= 75) {
+          xpText = i18next.t("battle:expGainFlavorNormal", {pokemonName: pokemon.name, exp: exp.value});
+        } else if (percentage <= 150) {
+          xpText = i18next.t("battle:expGainFlavorLarge", {pokemonName: pokemon.name, exp: exp.value});
+        } else {
+          xpText = i18next.t("battle:expGainFlavorVeryLarge", {pokemonName: pokemon.name, exp: exp.value});
+        }
+      }
+    } else {
+      xpText = i18next.t("battle:expGain", { pokemonName: pokemon.name, exp: exp.value });
+    }
+    this.scene.ui.showText(xpText, null, () => {
       const lastLevel = pokemon.level;
       pokemon.addExp(exp.value);
       const newLevel = pokemon.level;
@@ -4558,7 +4581,7 @@ export class LevelUpPhase extends PlayerPartyMemberPokemonPhase {
     pokemon.updateInfo();
     if (this.scene.expParty === ExpNotification.DEFAULT) {
       this.scene.playSound("level_up_fanfare");
-      this.scene.ui.showText(i18next.t("battle:levelUp", { pokemonName: this.getPokemon().name, level: this.level }), null, () => this.scene.ui.getMessageHandler().promptLevelUpStats(this.partyMemberIndex, prevStats, false).then(() => this.end()), null, true);
+      this.scene.ui.showText(i18next.t((this.scene.ambiguousTextInfo ? "battle:levelUpAmbiguous" : "battle:levelUp"), { pokemonName: this.getPokemon().name, level: this.level }), null, () => this.scene.ui.getMessageHandler().promptLevelUpStats(this.partyMemberIndex, prevStats, false).then(() => this.end()), null, true);
     } else if (this.scene.expParty === ExpNotification.SKIP) {
       this.end();
     } else {

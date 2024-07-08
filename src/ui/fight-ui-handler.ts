@@ -10,6 +10,7 @@ import { MoveCategory } from "#app/data/move.js";
 import i18next from "i18next";
 import {Button} from "#enums/buttons";
 import Pokemon, { PokemonMove } from "#app/field/pokemon.js";
+import * as DataTextTransformer from "./data-text-transformer";
 
 export default class FightUiHandler extends UiHandler {
   private movesContainer: Phaser.GameObjects.Container;
@@ -185,12 +186,16 @@ export default class FightUiHandler extends UiHandler {
       const maxPP = pokemonMove.getMovePp();
       const pp = maxPP - pokemonMove.ppUsed;
 
-      this.ppText.setText(`${Utils.padInt(pp, 2, "  ")}/${Utils.padInt(maxPP, 2, "  ")}`);
-      this.powerText.setText(`${power >= 0 ? power : "---"}`);
-      this.accuracyText.setText(`${accuracy >= 0 ? accuracy : "---"}`);
-
       const ppPercentLeft = pp / maxPP;
-
+      if (this.scene.ambiguousTextInfo) {
+        this.ppText.setText(DataTextTransformer.getPPFlavor(pp, maxPP));
+        this.powerText.setText(DataTextTransformer.getPowerFlavor(power));
+        this.accuracyText.setText(DataTextTransformer.getAccuracyFlavor(accuracy));
+      } else {
+        this.ppText.setText(`${Utils.padInt(pp, 2, "  ")}/${Utils.padInt(maxPP, 2, "  ")}`);
+        this.powerText.setText(`${power >= 0 ? power : "---"}`);
+        this.accuracyText.setText(`${accuracy >= 0 ? accuracy : "---"}`);
+      }
       //** Determines TextStyle according to percentage of PP remaining */
       let ppColorStyle = TextStyle.MOVE_PP_FULL;
       if (ppPercentLeft > 0.25 && ppPercentLeft <= 0.5) {
@@ -233,27 +238,54 @@ export default class FightUiHandler extends UiHandler {
     if (effectiveness === undefined) {
       return undefined;
     }
-
+    if (this.scene.ambiguousTextInfo) {
+      return DataTextTransformer.getMultiplierFlavor(effectiveness);
+    }
     return `${effectiveness}x`;
   }
 
   displayMoves() {
     const pokemon = (this.scene.getCurrentPhase() as CommandPhase).getPokemon();
     const moveset = pokemon.getMoveset();
-
     for (let moveIndex = 0; moveIndex < 4; moveIndex++) {
-      const moveText = addTextObject(this.scene, moveIndex % 2 === 0 ? 0 : 100, moveIndex < 2 ? 0 : 16, "-", TextStyle.WINDOW);
+      const moveText = addTextObject(this.scene, moveIndex % 2 === 0 ? 0 : 100, moveIndex < 2 ? 0 : 20, "-", TextStyle.WINDOW);
+      const effectiveText = addTextObject(this.scene, moveIndex % 2 === 0 ? 0 : 100, moveIndex < 2 ? 12 : 32, "-", TextStyle.EFFECTIVE);
       moveText.setName("text-empty-move");
-
       if (moveIndex < moveset.length) {
         const pokemonMove = moveset[moveIndex];
         moveText.setText(pokemonMove.getName());
         moveText.setName(pokemonMove.getName());
         moveText.setColor(this.getMoveColor(pokemon, pokemonMove) ?? moveText.style.color);
+        if (this.scene.typeHints) {
+          const damageMultiplier = this.getEffective(pokemon, pokemonMove);
+          let damageText : string;
+          const flavor = DataTextTransformer.getMultiplierFlavor(damageMultiplier);
+          if (!this.scene.ambiguousTextInfo) {
+            damageText = i18next.t("fightUiHandler:damageMultiplierWithFlavor", { damage: damageMultiplier, flavor: flavor });
+          } else {
+            damageText = i18next.t("fightUiHandler:damageOnlyFlavor", { flavor: flavor });
+          }
+          effectiveText.setText(damageText);
+          effectiveText.setName("text-effective-value");
+          effectiveText.setColor(this.getMoveColor(pokemon, pokemonMove) ?? moveText.style.color);
+          this.movesContainer.add(effectiveText);
+        }
       }
 
       this.movesContainer.add(moveText);
     }
+  }
+
+
+  private getEffective(pokemon: Pokemon, pokemonMove: PokemonMove): number | undefined {
+    const opponents = pokemon.getOpponents();
+    if (opponents.length <= 0) {
+      return 1;
+    }
+    const moveColors = opponents.map((opponent) => {
+      return opponent.getMoveEffectiveness(pokemon, pokemonMove);
+    }).sort((a, b) => b - a);
+    return moveColors[0];
   }
 
   /**

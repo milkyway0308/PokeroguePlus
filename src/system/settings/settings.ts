@@ -98,6 +98,7 @@ export const SettingKeys = {
   SE_Volume: "SE_VOLUME",
   Music_Preference: "MUSIC_PREFERENCE",
   Show_BGM_Bar: "SHOW_BGM_BAR",
+  Ambiguous_Skill_Info: "AMBIGUOUS_SKILL_INFO"
 };
 
 /**
@@ -490,6 +491,13 @@ export const Setting: Array<Setting> = [
     type: SettingType.DISPLAY
   },
   {
+    key: SettingKeys.Ambiguous_Skill_Info,
+    label: i18next.t("settings:absoluteSkillInfo"),
+    options: OFF_ON,
+    default: 0,
+    type: SettingType.DISPLAY
+  },
+  {
     key: SettingKeys.Show_BGM_Bar,
     label: i18next.t("settings:showBgmBar"),
     options: OFF_ON,
@@ -612,6 +620,9 @@ export function setSetting(scene: BattleScene, setting: string, value: integer):
     break;
   case SettingKeys.Show_BGM_Bar:
     scene.showBgmBar = Setting[index].options[value].value === "On";
+    break;
+  case SettingKeys.Ambiguous_Skill_Info:
+    scene.ambiguousTextInfo = Setting[index].options[value].value === "On";
     break;
   case SettingKeys.Candy_Upgrade_Notification:
     if (scene.candyUpgradeNotification === value) {

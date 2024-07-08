@@ -96,4 +96,5 @@ export const settings: SimpleTranslationEntries = {
   "controller": "컨트롤러",
   "gamepadSupport": "게임패드 지원",
   "showBgmBar": "BGM 제목 보여주기",
+  "absoluteSkillInfo": "매우 애매한 정보로 대체"
 } as const;

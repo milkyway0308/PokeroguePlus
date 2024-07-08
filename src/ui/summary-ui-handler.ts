@@ -1,28 +1,28 @@
-import BattleScene, { starterColors } from "../battle-scene";
-import { Mode } from "./ui";
+import BattleScene, {starterColors} from "../battle-scene";
+import {Mode} from "./ui";
 import UiHandler from "./ui-handler";
 import * as Utils from "../utils";
-import { PlayerPokemon } from "../field/pokemon";
-import { getStarterValueFriendshipCap, speciesStarters } from "../data/pokemon-species";
-import { argbFromRgba } from "@material/material-color-utilities";
-import { Type, getTypeRgb } from "../data/type";
-import { TextStyle, addBBCodeTextObject, addTextObject, getBBCodeFrag } from "./text";
-import Move, { MoveCategory } from "../data/move";
-import { getPokeballAtlasKey } from "../data/pokeball";
-import { getGenderColor, getGenderSymbol } from "../data/gender";
-import { getLevelRelExp, getLevelTotalExp } from "../data/exp";
-import { Stat, getStatName } from "../data/pokemon-stat";
-import { PokemonHeldItemModifier } from "../modifier/modifier";
-import { StatusEffect } from "../data/status-effect";
-import { getBiomeName } from "../data/biomes";
-import { getNatureName, getNatureStatMultiplier } from "../data/nature";
-import { loggedInUser } from "../account";
-import { Variant, getVariantTint } from "#app/data/variant";
+import {PlayerPokemon} from "../field/pokemon";
+import {getStarterValueFriendshipCap, speciesStarters} from "../data/pokemon-species";
+import {argbFromRgba} from "@material/material-color-utilities";
+import {getTypeRgb, Type} from "../data/type";
+import {addBBCodeTextObject, addTextObject, getBBCodeFrag, TextStyle} from "./text";
+import Move, {MoveCategory} from "../data/move";
+import {getPokeballAtlasKey} from "../data/pokeball";
+import {getGenderColor, getGenderSymbol} from "../data/gender";
+import {getLevelRelExp, getLevelTotalExp} from "../data/exp";
+import {getStatName, Stat} from "../data/pokemon-stat";
+import {modifierSortFunc, PokemonHeldItemModifier} from "../modifier/modifier";
+import {StatusEffect} from "../data/status-effect";
+import {getBiomeName} from "../data/biomes";
+import {getNatureName, getNatureStatMultiplier} from "../data/nature";
+import {loggedInUser} from "../account";
+import {getVariantTint, Variant} from "#app/data/variant";
 import {Button} from "#enums/buttons";
-import { Ability } from "../data/ability.js";
+import {Ability} from "../data/ability.js";
 import i18next from "i18next";
-import {modifierSortFunc} from "../modifier/modifier";
-import { PlayerGender } from "#enums/player-gender";
+import {PlayerGender} from "#enums/player-gender";
+import * as DataTextTransformer from "./data-text-transformer";
 
 
 enum Page {
@@ -717,7 +717,7 @@ export default class SummaryUiHandler extends UiHandler {
       }
 
       if (this.pokemon.getLuck()) {
-        const luckLabelText = addTextObject(this.scene, 141, 28, "Luck:", TextStyle.SUMMARY_ALT);
+        const luckLabelText = addTextObject(this.scene, 141, 28, i18next.t("fightUiHandler:luck_prefix"), TextStyle.SUMMARY_ALT);
         luckLabelText.setOrigin(0, 0);
         profileContainer.add(luckLabelText);
 
@@ -796,8 +796,10 @@ export default class SummaryUiHandler extends UiHandler {
       this.passiveContainer?.nameText.setVisible(false);
       this.passiveContainer?.descriptionText.setVisible(false);
 
-      const memoString = `${getBBCodeFrag(Utils.toReadableString(getNatureName(this.pokemon.getNature())), TextStyle.SUMMARY_RED)}${getBBCodeFrag(" nature,", TextStyle.WINDOW_ALT)}\n${getBBCodeFrag(`${this.pokemon.metBiome === -1 ? "apparently " : ""}met at Lv`, TextStyle.WINDOW_ALT)}${getBBCodeFrag(this.pokemon.metLevel.toString(), TextStyle.SUMMARY_RED)}${getBBCodeFrag(",", TextStyle.WINDOW_ALT)}\n${getBBCodeFrag(getBiomeName(this.pokemon.metBiome), TextStyle.SUMMARY_RED)}${getBBCodeFrag(".", TextStyle.WINDOW_ALT)}`;
-
+      const natureString = i18next.t("fightUiHandler:nature", {nature: `${getBBCodeFrag(Utils.toReadableString(getNatureName(this.pokemon.getNature())), TextStyle.SUMMARY_RED)}${getBBCodeFrag("", TextStyle.WINDOW_ALT)}`});
+      const metString = this.pokemon.metBiome === -1 ? i18next.t("fightUiHandler:met_unknown", { biome: `${getBBCodeFrag(getBiomeName(this.pokemon.metBiome), TextStyle.SUMMARY_RED)}${getBBCodeFrag("", TextStyle.WINDOW_ALT)}`})
+        : i18next.t("fightUiHandler:met", {level: `${getBBCodeFrag(this.pokemon.metLevel.toString(), TextStyle.SUMMARY_RED)}${getBBCodeFrag("", TextStyle.WINDOW_ALT)}`, place: `${getBBCodeFrag(getBiomeName(this.pokemon.metBiome), TextStyle.SUMMARY_RED)}${getBBCodeFrag("", TextStyle.WINDOW_ALT)}`});
+      const memoString = getBBCodeFrag(i18next.t("fightUiHandler:memo_text", {nature_text: natureString, met_text: metString}), TextStyle.WINDOW_ALT);
       const memoText = addBBCodeTextObject(this.scene, 7, 113, memoString, TextStyle.WINDOW_ALT);
       memoText.setOrigin(0, 0);
       profileContainer.add(memoText);
@@ -848,11 +850,11 @@ export default class SummaryUiHandler extends UiHandler {
       const relLvExp = getLevelRelExp(this.pokemon.level + 1, this.pokemon.species.growthRate);
       const expRatio = this.pokemon.level < this.scene.getMaxExpLevel() ? this.pokemon.levelExp / relLvExp : 0;
 
-      const expLabel = addTextObject(this.scene, 6, 112, "EXP. Points", TextStyle.SUMMARY);
+      const expLabel = addTextObject(this.scene, 6, 112, i18next.t("fightUiHandler:exp"), TextStyle.SUMMARY);
       expLabel.setOrigin(0, 0);
       statsContainer.add(expLabel);
 
-      const nextLvExpLabel = addTextObject(this.scene, 6, 128, "Next Lv.", TextStyle.SUMMARY);
+      const nextLvExpLabel = addTextObject(this.scene, 6, 128, i18next.t("fightUiHandler:until_next_lv"), TextStyle.SUMMARY);
       nextLvExpLabel.setOrigin(0, 0);
       statsContainer.add(nextLvExpLabel);
 
@@ -893,7 +895,7 @@ export default class SummaryUiHandler extends UiHandler {
       extraRowOverlay.setOrigin(0, 1);
       this.extraMoveRowContainer.add(extraRowOverlay);
 
-      const extraRowText = addTextObject(this.scene, 35, 0, this.summaryUiMode === SummaryUiMode.LEARN_MOVE ? this.newMove.name : "Cancel",
+      const extraRowText = addTextObject(this.scene, 35, 0, this.summaryUiMode === SummaryUiMode.LEARN_MOVE ? this.newMove.name : i18next.t("fightUiHandler:back"),
         this.summaryUiMode === SummaryUiMode.LEARN_MOVE ? TextStyle.SUMMARY_PINK : TextStyle.SUMMARY);
       extraRowText.setOrigin(0, 1);
       this.extraMoveRowContainer.add(extraRowText);
@@ -903,13 +905,17 @@ export default class SummaryUiHandler extends UiHandler {
         const newMoveTypeIcon = this.scene.add.sprite(0, 0, `types${Utils.verifyLang(i18next.resolvedLanguage) ? `_${i18next.resolvedLanguage}` : ""}`, Type[this.newMove.type].toLowerCase());
         newMoveTypeIcon.setOrigin(0, 1);
         this.extraMoveRowContainer.add(newMoveTypeIcon);
-
-        const ppOverlay = this.scene.add.image(163, -1, "summary_moves_overlay_pp");
-        ppOverlay.setOrigin(0, 1);
-        this.extraMoveRowContainer.add(ppOverlay);
-
-        const pp = Utils.padInt(this.newMove.pp, 2, "  ");
-        const ppText = addTextObject(this.scene, 173, 1, `${pp}/${pp}`, TextStyle.WINDOW);
+        let ppTextString: string;
+        if (this.scene.ambiguousTextInfo) {
+          ppTextString = DataTextTransformer.getPPFlavor(this.newMove.pp, this.newMove.pp);
+        } else {
+          const ppOverlay = this.scene.add.image(163, -1, "summary_moves_overlay_pp");
+          ppOverlay.setOrigin(0, 1);
+          this.extraMoveRowContainer.add(ppOverlay);
+          const pp = Utils.padInt(this.newMove.pp, 2, "  ");
+          ppTextString = `${pp}/${pp}`;
+        }
+        const ppText = addTextObject(this.scene, this.scene.ambiguousTextInfo ? 143 : 173, 1, ppTextString, TextStyle.WINDOW);
         ppText.setOrigin(0, 1);
         this.extraMoveRowContainer.add(ppText);
       }
@@ -931,17 +937,23 @@ export default class SummaryUiHandler extends UiHandler {
         moveText.setOrigin(0, 1);
         moveRowContainer.add(moveText);
 
-        const ppOverlay = this.scene.add.image(163, -1, "summary_moves_overlay_pp");
-        ppOverlay.setOrigin(0, 1);
-        moveRowContainer.add(ppOverlay);
-
         const ppText = addTextObject(this.scene, 173, 1, "--/--", TextStyle.WINDOW);
         ppText.setOrigin(0, 1);
 
         if (move) {
           const maxPP = move.getMovePp();
           const pp = maxPP - move.ppUsed;
-          ppText.setText(`${Utils.padInt(pp, 2, "  ")}/${Utils.padInt(maxPP, 2, "  ")}`);
+          let ppTextString: string;
+          if (this.scene.ambiguousTextInfo) {
+            ppText.setX(143);
+            ppTextString = DataTextTransformer.getPPFlavor(pp, maxPP);
+          } else {
+            const ppOverlay = this.scene.add.image(163, -1, "summary_moves_overlay_pp");
+            ppOverlay.setOrigin(0, 1);
+            moveRowContainer.add(ppOverlay);
+            ppTextString = `${Utils.padInt(pp, 2, "  ")}/${Utils.padInt(maxPP, 2, "  ")}`;
+          }
+          ppText.setText(ppTextString);
         }
 
         moveRowContainer.add(ppText);
